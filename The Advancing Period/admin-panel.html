@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>管理员面板 - 进取时代制作组</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'SimSun', 'STSong', serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.35);
+        }
+        .navbar h1 {
+            color: white;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .navbar .actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+        
+        /* 紧凑的正方形按钮样式 */
+        .btn {
+            padding: 0.5rem 0.75rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.8rem;
+            letter-spacing: 0.3px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.4rem;
+            white-space: nowrap;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 主要按钮 - 白色背景 */
+        .btn-primary {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            color: #6366f1;
+            box-shadow: 0 2px 8px rgba(255, 255, 255, 0.25);
+        }
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.35);
+        }
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+        
+        /* 警告按钮 - 橙色渐变 */
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(245, 158, 11, 0.4);
+        }
+        .btn-warning:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.5);
+        }
+        .btn-warning:active {
+            transform: translateY(0);
+        }
+        
+        /* 危险按钮 - 红色渐变 */
+        .btn-danger {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.4);
+        }
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.5);
+        }
+        .btn-danger:active {
+            transform: translateY(0);
+        }
+        
+        /* 小按钮样式 */
+        .btn-sm {
+            padding: 0.35rem 0.7rem;
+            font-size: 0.75rem;
+            border-radius: 6px;
+            gap: 0.25rem;
+        }
+        .btn-edit {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+            box-shadow: 0 2px 6px rgba(245, 158, 11, 0.3);
+        }
+        .btn-edit:hover {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(245, 158, 11, 0.4);
+        }
+        .btn-delete {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 2px 6px rgba(239, 68, 68, 0.3);
+        }
+        .btn-delete:hover {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            transform: translateY(-1px);
+            box-shadow: 0 3px 10px rgba(239, 68, 68, 0.4);
+        }
+        
+        .logout-form {
+            display: inline-flex;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 20px;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+        .stat-card .number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6366f1;
+        }
+        .stat-card .label {
+            color: #64748b;
+            margin-top: 0.5rem;
+        }
+        .section {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        .section-title {
+            font-size: 1.3rem;
+            color: #1e1b4b;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        th {
+            background: #f8fafc;
+            font-weight: 600;
+            color: #475569;
+        }
+        
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal {
+            background: white;
+            border-radius: 12px;
+            padding: 0.1rem 1.2rem;
+            width: 90%;
+            max-width: 500px;
+            max-height: 80vh;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        .modal-content {
+            overflow-y: auto;
+            max-height: calc(80vh - 80px);
+            padding-right: 10px;
+        }
+        .modal-content::-webkit-scrollbar {
+            width: 6px;
+        }
+        .modal-content::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+        .modal-content::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+        .modal-content::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .modal-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.6rem;
+            color: #1e1b4b;
+        }
+        .form-group {
+            margin-bottom: 0.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.25rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 6px 8px;
+            border: 2px solid #e2e8f0;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #6366f1;
+        }
+        .form-group textarea {
+            resize: vertical;
+            min-height: 60px;
+        }
+        .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+            margin-bottom: 0.3rem;
+        }
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #475569;
+        }
+        .btn-secondary:hover {
+            background: #cbd5e1;
+        }
+        
+        .success-message {
+            background: #dcfce7;
+            color: #16a34a;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: none;
+        }
+        
+        .drop-zone {
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8fafc;
+        }
+        .drop-zone:hover {
+            border-color: #6366f1;
+            background: #f1f5f9;
+        }
+        .drop-zone.dragover {
+            border-color: #6366f1;
+            background: #e0e7ff;
+            transform: scale(1.02);
+        }
+        .drop-zone-content svg {
+            margin-bottom: 1rem;
+        }
+        .drop-zone-content p {
+            margin: 0.5rem 0;
+            color: #475569;
+        }
+        .drop-zone-hint {
+            font-size: 0.85rem !important;
+            color: #94a3b8 !important;
+        }
+    </style>
+    <script src="https://cdn.bootcdn.net/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>管理员面板</h1>
+        <div class="actions">
+            <a href="admin-announcements.html" class="btn btn-warning">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                    <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+                公告管理
+            </a>
+            <a href="#addCategoryModal" class="btn btn-primary" onclick="openAddCategoryModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                添加栏目
+            </a>
+            <a href="#addWorkModal" class="btn btn-primary" onclick="openAddModal()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 5v14M5 12h14"></path>
+                </svg>
+                添加作品
+            </a>
+            <button class="btn btn-warning" onclick="deleteSelectedWorks()">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                </svg>
+                删除选中
+            </button>
+            <form class="logout-form" id="logoutForm">
+                <button type="submit" class="btn btn-danger">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                        <polyline points="16 17 21 12 16 7"></polyline>
+                        <line x1="21" y1="12" x2="9" y2="12"></line>
+                    </svg>
+                    退出
+                </button>
+            </form>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="number" id="totalWorks">0</div>
+                <div class="label">作品总数</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="mainWorks">0</div>
+                <div class="label">主要作品</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="otherWorks">0</div>
+                <div class="label">其他作品</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="visitorCount">0</div>
+                <div class="label">登录次数</div>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">作品列表</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" id="selectAll" onchange="toggleSelectAll()"></th>
+                        <th>ID</th>
+                        <th>标题</th>
+                        <th>类型</th>
+                        <th>分类</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="worksTable">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <h2 class="section-title">栏目管理</h2>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>栏目名称</th>
+                        <th>所属分类</th>
+                        <th>描述</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="categoriesTable">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- 添加作品弹窗 -->
+    <div class="modal-overlay" id="addWorkModal">
+        <div class="modal">
+            <h3 class="modal-title">添加作品</h3>
+            <div id="successMessage" class="success-message">添加成功！</div>
+            <div class="modal-content">
+                <form id="addWorkForm">
+                    <div class="form-group">
+                        <label>标题</label>
+                        <input type="text" id="workTitle" required>
+                    </div>
+                    <div class="form-group">
+                        <label>类型</label>
+                        <select id="workType" required onchange="updateCategories()">
+                            <option value="main">主要作品</option>
+                            <option value="other">其他作品</option>
+                            <option value="fun">有意思的东西</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>所属栏目</label>
+                        <select id="workCategorySelect">
+                            <option value="">不选择栏目</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>分类</label>
+                        <select id="workCategory">
+                            <option value="常规">常规</option>
+                            <option value="精选">精选</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>正文 <span style="color: #ef4444;">*</span></label>
+                        <textarea id="workDesc" rows="6" required placeholder="请输入作品正文内容，或上传Word文档自动提取"></textarea>
+                        <div style="margin-top: 10px;">
+                            <div id="dropZone" class="drop-zone">
+                                <div class="drop-zone-content">
+                                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="color: #6366f1;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="17 8 12 3 7 8"></polyline>
+                                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                                    </svg>
+                                    <p>拖拽文件到这里上传，或点击选择文件</p>
+                                    <p class="drop-zone-hint">支持多文件同时上传，自动识别类型</p>
+                                </div>
+                                <input type="file" id="dropZoneFile" accept=".doc,.docx,.txt,.jpg,.jpeg,.png,.gif,.webp,.pdf" multiple style="display: none;">
+                            </div>
+                            <div id="contentUploadStatus" style="margin-top: 10px; display: none; color: #10b981;">正在解析文档...</div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>标签</label>
+                        <input type="text" id="workTags" placeholder="用逗号分隔">
+                    </div>
+                    <div class="form-group">
+                        <label>封面图片（可选）</label>
+                        <input type="file" id="workImageUpload" accept="image/*" onchange="previewImage(this, 'workImagePreview')">
+                        <span class="upload-hint">支持: JPG, PNG, GIF, WebP 格式，最大2MB</span>
+                        <img id="workImagePreview" src="" alt="预览" style="max-width: 100%; max-height: 150px; margin-top: 10px; display: none;">
+                        <input type="hidden" id="workImage">
+                    </div>
+                    <div class="form-group">
+                        <label>附件文件（可选）</label>
+                        <input type="file" id="workFileUpload" accept=".doc,.docx,.pdf,.txt" onchange="previewFile(this)">
+                        <span class="upload-hint">支持: DOC, DOCX, PDF, TXT 格式，最大10MB</span>
+                        <div id="workFilePreview" style="margin-top: 10px; display: none;">
+                            <span style="color: #10b981;">已选择文件: </span>
+                            <span id="workFileName"></span>
+                            <button type="button" style="margin-left: 10px; padding: 2px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="clearFile()">清除</button>
+                        </div>
+                        <input type="hidden" id="workFile">
+                        <input type="hidden" id="workFileNameHidden">
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">添加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 添加栏目弹窗 -->
+    <div class="modal-overlay" id="addCategoryModal">
+        <div class="modal">
+            <h3 class="modal-title">添加栏目</h3>
+            <div id="categorySuccessMessage" class="success-message">添加成功！</div>
+            <div class="modal-content">
+                <form id="addCategoryForm">
+                    <div class="form-group">
+                        <label>栏目名称 <span style="color: #ef4444;">*</span></label>
+                        <input type="text" id="categoryName" required placeholder="如：动画系列、小说合集">
+                    </div>
+                    <div class="form-group">
+                        <label>所属分类</label>
+                        <select id="categoryParent">
+                            <option value="main">主要作品</option>
+                            <option value="other">其他作品</option>
+                            <option value="fun">有意思的东西</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>栏目描述</label>
+                        <textarea id="categoryDesc" rows="3" placeholder="简短描述这个栏目"></textarea>
+                    </div>
+                    <div class="modal-actions">
+                        <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                        <button type="submit" class="btn btn-primary">添加</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 编辑作品弹窗 -->
+    <div class="modal-overlay" id="editWorkModal">
+        <div class="modal">
+            <h3 class="modal-title">编辑作品</h3>
+            <form id="editWorkForm">
+                <input type="hidden" id="editWorkId">
+                <div class="form-group">
+                    <label>标题</label>
+                    <input type="text" id="editWorkTitle" required>
+                </div>
+                <div class="form-group">
+                    <label>类型</label>
+                    <select id="editWorkType" required onchange="updateEditCategories()">
+                        <option value="main">主要作品</option>
+                        <option value="other">其他作品</option>
+                        <option value="fun">有意思的东西</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>所属栏目</label>
+                    <select id="editWorkCategorySelect">
+                        <option value="">不选择栏目</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>分类</label>
+                    <select id="editWorkCategory">
+                        <option value="常规">常规</option>
+                        <option value="精选">精选</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>描述</label>
+                    <textarea id="editWorkDesc"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>标签</label>
+                    <input type="text" id="editWorkTags" placeholder="用逗号分隔">
+                </div>
+                <div class="form-group">
+                    <label>封面图片</label>
+                    <input type="file" id="editWorkImageUpload" accept="image/*" onchange="previewImage(this, 'editWorkImagePreview')">
+                    <img id="editWorkImagePreview" src="" alt="预览" style="max-width: 100%; max-height: 150px; margin-top: 10px; display: none;">
+                    <input type="hidden" id="editWorkImage">
+                </div>
+                <div class="form-group">
+                    <label>附件文件</label>
+                    <input type="file" id="editWorkFileUpload" accept=".doc,.docx,.pdf,.txt" onchange="previewEditFile(this)">
+                    <div id="editWorkFilePreview" style="margin-top: 10px; display: none;">
+                        <span style="color: #10b981;">已选择文件: </span>
+                        <span id="editWorkFileName"></span>
+                        <button type="button" style="margin-left: 10px; padding: 2px 8px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;" onclick="clearEditFile()">清除</button>
+                    </div>
+                    <input type="hidden" id="editWorkFile">
+                    <input type="hidden" id="editWorkFileNameHidden">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- 编辑栏目弹窗 -->
+    <div class="modal-overlay" id="editCategoryModal">
+        <div class="modal">
+            <h3 class="modal-title">编辑栏目</h3>
+            <form id="editCategoryForm">
+                <input type="hidden" id="editCategoryId">
+                <div class="form-group">
+                    <label>栏目名称 <span style="color: #ef4444;">*</span></label>
+                    <input type="text" id="editCategoryName" required>
+                </div>
+                <div class="form-group">
+                    <label>所属分类</label>
+                    <select id="editCategoryParent">
+                        <option value="main">主要作品</option>
+                        <option value="other">其他作品</option>
+                        <option value="fun">有意思的东西</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>栏目描述</label>
+                    <textarea id="editCategoryDesc" rows="3"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            checkLogin();
+            loadStats();
+            loadWorks();
+            loadCategories();
+            initDragAndDrop();
+        });
+
+        function checkLogin() {
+            const isLoggedIn = localStorage.getItem('isLoggedIn');
+            const loginTime = localStorage.getItem('loginTime');
+            const sessionDuration = 3600000;
+            
+            if (!isLoggedIn || Date.now() > parseInt(loginTime) + sessionDuration) {
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('loginTime');
+                window.location.href = 'admin-login.html';
+            }
+        }
+
+        document.getElementById('logoutForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            localStorage.removeItem('isLoggedIn');
+            localStorage.removeItem('loginTime');
+            window.location.href = 'admin-login.html';
+        });
+
+        function loadStats() {
+            const works = getWorks();
+            document.getElementById('totalWorks').textContent = works.length;
+            document.getElementById('mainWorks').textContent = works.filter(w => w.type === 'main').length;
+            document.getElementById('otherWorks').textContent = works.filter(w => w.type === 'other').length;
+            
+            const visitorCount = localStorage.getItem('loginCount') || '0';
+            document.getElementById('visitorCount').textContent = visitorCount;
+        }
+
+        function loadWorks() {
+            const works = getWorks();
+            const tbody = document.getElementById('worksTable');
+            
+            if (works.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: #94a3b8; padding: 2rem;">暂无作品</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = works.map(work => {
+                const typeText = {
+                    'main': '主要作品',
+                    'other': '其他作品',
+                    'fun': '有意思的东西'
+                }[work.type] || work.type;
+                
+                return `
+                    <tr>
+                        <td><input type="checkbox" class="work-checkbox" value="${work.id}"></td>
+                        <td>${work.id}</td>
+                        <td>${work.title}</td>
+                        <td>${typeText}</td>
+                        <td>${work.category || '未分类'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-edit" onclick="openEditModal(${work.id})">编辑</button>
+                            <button class="btn btn-sm btn-delete" onclick="deleteWork(${work.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getWorks() {
+            const stored = localStorage.getItem('works');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveWorks(works) {
+            localStorage.setItem('works', JSON.stringify(works));
+        }
+
+        function loadCategories() {
+            const categories = getCategories();
+            const tbody = document.getElementById('categoriesTable');
+            
+            if (categories.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 2rem;">暂无栏目</td></tr>';
+                return;
+            }
+            
+            tbody.innerHTML = categories.map(cat => {
+                const parentText = {
+                    'main': '主要作品',
+                    'other': '其他作品',
+                    'fun': '有意思的东西'
+                }[cat.parent] || cat.parent;
+                
+                return `
+                    <tr>
+                        <td>${cat.id}</td>
+                        <td>${cat.name}</td>
+                        <td>${parentText}</td>
+                        <td>${cat.desc || '-'}</td>
+                        <td>
+                            <button class="btn btn-sm btn-edit" onclick="openEditCategoryModal(${cat.id})">编辑</button>
+                            <button class="btn btn-sm btn-delete" onclick="deleteCategory(${cat.id})">删除</button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function getCategories() {
+            const stored = localStorage.getItem('categories');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveCategories(categories) {
+            localStorage.setItem('categories', JSON.stringify(categories));
+        }
+
+        function openAddModal() {
+            document.getElementById('addWorkModal').classList.add('active');
+            document.getElementById('successMessage').style.display = 'none';
+            document.getElementById('addWorkForm').reset();
+            document.getElementById('workImagePreview').style.display = 'none';
+            document.getElementById('workFilePreview').style.display = 'none';
+            updateCategories();
+        }
+
+        function openAddCategoryModal() {
+            document.getElementById('addCategoryModal').classList.add('active');
+            document.getElementById('categorySuccessMessage').style.display = 'none';
+            document.getElementById('addCategoryForm').reset();
+        }
+
+        function closeModal() {
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.classList.remove('active');
+            });
+        }
+
+        function closeEditModal() {
+            document.getElementById('editWorkModal').classList.remove('active');
+        }
+
+        function updateCategories() {
+            const type = document.getElementById('workType').value;
+            const categories = getCategories().filter(c => c.parent === type);
+            const select = document.getElementById('workCategorySelect');
+            
+            select.innerHTML = '<option value="">不选择栏目</option>' +
+                categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        function updateEditCategories() {
+            const type = document.getElementById('editWorkType').value;
+            const categories = getCategories().filter(c => c.parent === type);
+            const select = document.getElementById('editWorkCategorySelect');
+            
+            select.innerHTML = '<option value="">不选择栏目</option>' +
+                categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        document.getElementById('addWorkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const title = document.getElementById('workTitle').value.trim();
+            const type = document.getElementById('workType').value;
+            const categoryId = document.getElementById('workCategorySelect').value;
+            const category = document.getElementById('workCategory').value;
+            const desc = document.getElementById('workDesc').value;
+            const tags = document.getElementById('workTags').value.trim();
+            const image = document.getElementById('workImage').value;
+            const file = document.getElementById('workFile').value;
+            const fileName = document.getElementById('workFileNameHidden').value;
+            
+            const works = getWorks();
+            const newWork = {
+                id: Date.now(),
+                title,
+                type,
+                categoryId,
+                category,
+                desc,
+                tags,
+                image: image || 'https://via.placeholder.com/400x250/6366f1/ffffff',
+                file,
+                fileName,
+                createdAt: Date.now()
+            };
+            
+            works.push(newWork);
+            saveWorks(works);
+            
+            document.getElementById('successMessage').textContent = '添加成功！';
+            document.getElementById('successMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal();
+                loadStats();
+                loadWorks();
+            }, 1000);
+        });
+
+        document.getElementById('addCategoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('categoryName').value.trim();
+            const parent = document.getElementById('categoryParent').value;
+            const desc = document.getElementById('categoryDesc').value.trim();
+            
+            const categories = getCategories();
+            const newCategory = {
+                id: Date.now(),
+                name,
+                parent,
+                desc
+            };
+            
+            categories.push(newCategory);
+            saveCategories(categories);
+            
+            document.getElementById('categorySuccessMessage').textContent = '添加成功！';
+            document.getElementById('categorySuccessMessage').style.display = 'block';
+            
+            setTimeout(() => {
+                closeModal();
+                loadCategories();
+            }, 1000);
+        });
+
+        function openEditModal(id) {
+            const works = getWorks();
+            const work = works.find(w => w.id === id);
+            
+            if (!work) return;
+            
+            document.getElementById('editWorkId').value = work.id;
+            document.getElementById('editWorkTitle').value = work.title;
+            document.getElementById('editWorkType').value = work.type;
+            document.getElementById('editWorkCategory').value = work.category || '常规';
+            document.getElementById('editWorkDesc').value = work.desc || '';
+            document.getElementById('editWorkTags').value = work.tags || '';
+            
+            updateEditCategories();
+            setTimeout(() => {
+                document.getElementById('editWorkCategorySelect').value = work.categoryId || '';
+            }, 0);
+            
+            if (work.image && work.image !== 'https://via.placeholder.com/400x250/6366f1/ffffff') {
+                document.getElementById('editWorkImagePreview').src = work.image;
+                document.getElementById('editWorkImagePreview').style.display = 'block';
+            }
+            
+            document.getElementById('editWorkImage').value = work.image || '';
+            
+            if (work.file) {
+                document.getElementById('editWorkFilePreview').style.display = 'block';
+                document.getElementById('editWorkFileName').textContent = work.fileName || '文件';
+            }
+            document.getElementById('editWorkFile').value = work.file || '';
+            document.getElementById('editWorkFileNameHidden').value = work.fileName || '';
+            
+            document.getElementById('editWorkModal').classList.add('active');
+        }
+
+        document.getElementById('editWorkForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editWorkId').value);
+            const title = document.getElementById('editWorkTitle').value.trim();
+            const type = document.getElementById('editWorkType').value;
+            const categoryId = document.getElementById('editWorkCategorySelect').value;
+            const category = document.getElementById('editWorkCategory').value;
+            const desc = document.getElementById('editWorkDesc').value;
+            const tags = document.getElementById('editWorkTags').value.trim();
+            const image = document.getElementById('editWorkImage').value;
+            const file = document.getElementById('editWorkFile').value;
+            const fileName = document.getElementById('editWorkFileNameHidden').value;
+            
+            const works = getWorks();
+            const index = works.findIndex(w => w.id === id);
+            
+            if (index !== -1) {
+                works[index] = {
+                    ...works[index],
+                    title,
+                    type,
+                    categoryId,
+                    category,
+                    desc,
+                    tags,
+                    image: image || 'https://via.placeholder.com/400x250/6366f1/ffffff',
+                    file,
+                    fileName
+                };
+                saveWorks(works);
+                
+                closeEditModal();
+                loadStats();
+                loadWorks();
+            }
+        });
+
+        function deleteWork(id) {
+            if (!confirm('确定要删除这个作品吗？')) return;
+            
+            const works = getWorks().filter(w => w.id !== id);
+            saveWorks(works);
+            loadStats();
+            loadWorks();
+        }
+
+        function openEditCategoryModal(id) {
+            const categories = getCategories();
+            const category = categories.find(c => c.id === id);
+            
+            if (!category) return;
+            
+            document.getElementById('editCategoryId').value = category.id;
+            document.getElementById('editCategoryName').value = category.name;
+            document.getElementById('editCategoryParent').value = category.parent;
+            document.getElementById('editCategoryDesc').value = category.desc || '';
+            
+            document.getElementById('editCategoryModal').classList.add('active');
+        }
+
+        document.getElementById('editCategoryForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const id = parseInt(document.getElementById('editCategoryId').value);
+            const name = document.getElementById('editCategoryName').value.trim();
+            const parent = document.getElementById('editCategoryParent').value;
+            const desc = document.getElementById('editCategoryDesc').value.trim();
+            
+            const categories = getCategories();
+            const index = categories.findIndex(c => c.id === id);
+            
+            if (index !== -1) {
+                categories[index] = {
+                    ...categories[index],
+                    name,
+                    parent,
+                    desc
+                };
+                saveCategories(categories);
+                
+                closeModal();
+                loadCategories();
+            }
+        });
+
+        function deleteCategory(id) {
+            if (!confirm('确定要删除这个栏目吗？')) return;
+            
+            const categories = getCategories().filter(c => c.id !== id);
+            saveCategories(categories);
+            loadCategories();
+        }
+
+        function toggleSelectAll() {
+            const selectAll = document.getElementById('selectAll');
+            const checkboxes = document.querySelectorAll('.work-checkbox');
+            checkboxes.forEach(cb => cb.checked = selectAll.checked);
+        }
+
+        function deleteSelectedWorks() {
+            const checked = document.querySelectorAll('.work-checkbox:checked');
+            if (checked.length === 0) {
+                alert('请选择要删除的作品');
+                return;
+            }
+            
+            if (!confirm(`确定要删除选中的 ${checked.length} 个作品吗？`)) return;
+            
+            const ids = Array.from(checked).map(cb => parseInt(cb.value));
+            const works = getWorks().filter(w => !ids.includes(w.id));
+            saveWorks(works);
+            loadStats();
+            loadWorks();
+        }
+
+        function initDragAndDrop() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.getElementById('dropZoneFile');
+            const statusEl = document.getElementById('contentUploadStatus');
+            
+            dropZone.addEventListener('click', () => fileInput.click());
+            
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.classList.add('dragover');
+            });
+            
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.classList.remove('dragover');
+            });
+            
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.classList.remove('dragover');
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            fileInput.addEventListener('change', () => {
+                handleFiles(fileInput.files);
+            });
+        }
+
+        async function handleFiles(files) {
+            const statusEl = document.getElementById('contentUploadStatus');
+            const descEl = document.getElementById('workDesc');
+            const imageEl = document.getElementById('workImage');
+            const imagePreviewEl = document.getElementById('workImagePreview');
+            const fileEl = document.getElementById('workFile');
+            const fileNameEl = document.getElementById('workFileName');
+            const filePreviewEl = document.getElementById('workFilePreview');
+            const fileNameHiddenEl = document.getElementById('workFileNameHidden');
+            
+            for (const file of files) {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imageEl.value = e.target.result;
+                        imagePreviewEl.src = e.target.result;
+                        imagePreviewEl.style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else if (file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+                    statusEl.style.display = 'block';
+                    statusEl.textContent = '正在解析文档...';
+                    
+                    try {
+                        const arrayBuffer = await file.arrayBuffer();
+                        const zip = await JSZip.loadAsync(arrayBuffer);
+                        const content = await zip.file('word/document.xml')?.async('text');
+                        
+                        if (content) {
+                            const text = content
+                                .replace(/<[^>]+>/g, ' ')
+                                .replace(/\s+/g, ' ')
+                                .trim();
+                            descEl.value = text;
+                        }
+                    } catch (err) {
+                        console.error('解析失败:', err);
+                        statusEl.textContent = '解析失败，请手动输入';
+                    }
+                    
+                    setTimeout(() => {
+                        statusEl.style.display = 'none';
+                    }, 2000);
+                } else if (file.name.endsWith('.txt')) {
+                    const text = await file.text();
+                    descEl.value = text;
+                } else if (file.type === 'application/pdf') {
+                    fileEl.value = URL.createObjectURL(file);
+                    fileNameEl.textContent = file.name;
+                    filePreviewEl.style.display = 'block';
+                    fileNameHiddenEl.value = file.name;
+                }
+            }
+        }
+
+        function previewImage(input, previewId) {
+            const preview = document.getElementById(previewId);
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById(input.id.replace('Upload', '')).value = e.target.result;
+                };
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+
+        function previewFile(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const url = URL.createObjectURL(file);
+                document.getElementById('workFile').value = url;
+                document.getElementById('workFileName').textContent = file.name;
+                document.getElementById('workFilePreview').style.display = 'block';
+                document.getElementById('workFileNameHidden').value = file.name;
+            }
+        }
+
+        function previewEditFile(input) {
+            if (input.files && input.files[0]) {
+                const file = input.files[0];
+                const url = URL.createObjectURL(file);
+                document.getElementById('editWorkFile').value = url;
+                document.getElementById('editWorkFileName').textContent = file.name;
+                document.getElementById('editWorkFilePreview').style.display = 'block';
+                document.getElementById('editWorkFileNameHidden').value = file.name;
+            }
+        }
+
+        function clearFile() {
+            document.getElementById('workFileUpload').value = '';
+            document.getElementById('workFile').value = '';
+            document.getElementById('workFilePreview').style.display = 'none';
+            document.getElementById('workFileNameHidden').value = '';
+        }
+
+        function clearEditFile() {
+            document.getElementById('editWorkFileUpload').value = '';
+            document.getElementById('editWorkFile').value = '';
+            document.getElementById('editWorkFilePreview').style.display = 'none';
+            document.getElementById('editWorkFileNameHidden').value = '';
+        }
+    </script>
+</body>
+</html>
