@@ -740,6 +740,15 @@
             localStorage.setItem('works', JSON.stringify(works));
         }
 
+        function getAnnouncements() {
+            const stored = localStorage.getItem('announcements');
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        function saveAnnouncements(announcements) {
+            localStorage.setItem('announcements', JSON.stringify(announcements));
+        }
+
         function loadCategories() {
             const categories = getCategories();
             const tbody = document.getElementById('categoriesTable');
