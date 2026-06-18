@@ -544,7 +544,10 @@ function getWorks() {
         const works = JSON.parse(stored);
         if (works.length > 0) return works;
     }
-    return initialData ? initialData.works : [];
+    if (initialData && initialData.works.length > 0) {
+        return initialData.works;
+    }
+    return [];
 }
 
 function getCategories() {
@@ -553,7 +556,10 @@ function getCategories() {
         const categories = JSON.parse(stored);
         if (categories.length > 0) return categories;
     }
-    return initialData ? initialData.categories : [];
+    if (initialData && initialData.categories.length > 0) {
+        return initialData.categories;
+    }
+    return [];
 }
 
 function getAnnouncements() {
@@ -562,7 +568,10 @@ function getAnnouncements() {
         const announcements = JSON.parse(stored);
         if (announcements.length > 0) return announcements;
     }
-    return initialData ? initialData.announcements : [];
+    if (initialData && initialData.announcements.length > 0) {
+        return initialData.announcements;
+    }
+    return [];
 }
 
 function getCategoryById(id) {
