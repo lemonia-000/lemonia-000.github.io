@@ -78,7 +78,8 @@ function switchLanguage(lang) {
 }
 
 // 动态加载作品
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    await loadInitialData();
     incrementVisitorCount();
     loadAllPageWorks();
     
@@ -524,14 +525,44 @@ function loadWorks() {
     loadHomePageWorks();
 }
 
+// 从文件加载初始数据
+let initialData = null;
+
+async function loadInitialData() {
+    try {
+        const response = await fetch('data.json');
+        initialData = await response.json();
+    } catch (error) {
+        console.log('无法加载初始数据文件:', error);
+        initialData = { works: [], categories: [], announcements: [] };
+    }
+}
+
 function getWorks() {
     const stored = localStorage.getItem('works');
-    return stored ? JSON.parse(stored) : [];
+    if (stored) {
+        const works = JSON.parse(stored);
+        if (works.length > 0) return works;
+    }
+    return initialData ? initialData.works : [];
 }
 
 function getCategories() {
     const stored = localStorage.getItem('categories');
-    return stored ? JSON.parse(stored) : [];
+    if (stored) {
+        const categories = JSON.parse(stored);
+        if (categories.length > 0) return categories;
+    }
+    return initialData ? initialData.categories : [];
+}
+
+function getAnnouncements() {
+    const stored = localStorage.getItem('announcements');
+    if (stored) {
+        const announcements = JSON.parse(stored);
+        if (announcements.length > 0) return announcements;
+    }
+    return initialData ? initialData.announcements : [];
 }
 
 function getCategoryById(id) {
