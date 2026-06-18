@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>主要作品 - 进取时代制作组</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- 公告栏 -->
+    <div id="announcementBar" class="announcement-bar">
+        <button id="announcementToggle" class="announcement-toggle" onclick="toggleAnnouncement()" title="公告">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            <span id="announcementDot" class="announcement-dot" style="display: none;"></span>
+        </button>
+        <div id="announcementPanel" class="announcement-panel">
+            <div class="announcement-header">
+                <h3>公告</h3>
+                <button class="announcement-close" onclick="toggleAnnouncement()">×</button>
+            </div>
+            <div id="announcementContent" class="announcement-content">
+                <!-- 公告内容将动态加载 -->
+            </div>
+        </div>
+    </div>
+
+    <!-- 导航栏 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <h1>进取时代制作组</h1>
+            </div>
+            <ul class="nav-links">
+                <li><a href="index.html">首页</a></li>
+                <li><a href="main-works.html">主要作品</a></li>
+                <li><a href="other-works.html">其他作品</a></li>
+                <li><a href="fun-stuff.html">有意思的东西</a></li>
+                <li><a href="about.html">关于我们</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- 页面头部 -->
+    <header class="page-header">
+        <div class="container">
+            <div class="header-content">
+                <h1 class="page-title">主要作品</h1>
+                <p class="page-subtitle">深入探索我们的核心创作，感受精心构建的世界</p>
+                <div class="header-decoration"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- 页面内容 -->
+    <div class="page-content">
+        <div class="container">
+            <!-- 作品列表 -->
+            <div class="works-list" id="mainWorksList">
+            </div>
+        </div>
+    </div>
+
+    <!-- 页脚 -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <h3>进取时代制作组</h3>
+                    <p>谱写新世界的史诗</p>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="main-works.html">主要作品</a></li>
+                        <li><a href="other-works.html">其他作品</a></li>
+                        <li><a href="fun-stuff.html">有意思的东西</a></li>
+                        <li><a href="about.html">关于我们</a></li>
+                    </ul>
+                </div>
+                <div class="footer-social">
+                    <p>联系我们</p>
+                    <div class="social-icons">
+                        <a href="https://www.zhihu.com/people/86-63-86-78-68" target="_blank" class="icon">知乎</a>
+                        <a href="https://space.bilibili.com/1070063035" target="_blank" class="icon">B站</a>
+                        <span class="icon">QQ群: 887551265</span>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2024 进取时代制作组. 保留所有权利.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
