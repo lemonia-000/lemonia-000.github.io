@@ -52,14 +52,12 @@ const translations = {
 
 // 切换语言
 function switchLanguage(lang) {
-    // 更新按钮状态
     document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
-    document.querySelector(`[data-lang="${lang}"]`).classList.add('active');
+    const langBtns = document.querySelectorAll(`[data-lang="${lang}"]`);
+    langBtns.forEach(btn => btn.classList.add('active'));
     
-    // 保存语言设置
     localStorage.setItem('selectedLanguage', lang);
     
-    // 翻译所有带data-lang-key属性的元素
     document.querySelectorAll('[data-lang-key]').forEach(element => {
         const key = element.getAttribute('data-lang-key');
         if (translations[lang] && translations[lang][key]) {
@@ -67,13 +65,23 @@ function switchLanguage(lang) {
         }
     });
     
-    // 翻译logo（单独处理，没有data-lang-key）
     const logo = document.querySelector('.logo h1');
     if (logo) {
         const key = '进取时代制作组';
         if (translations[lang] && translations[lang][key]) {
             logo.textContent = translations[lang][key];
         }
+    }
+}
+
+// 切换移动端菜单
+function toggleMobileMenu() {
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobileMenu');
+    
+    if (menuBtn && mobileMenu) {
+        menuBtn.classList.toggle('active');
+        mobileMenu.classList.toggle('active');
     }
 }
 

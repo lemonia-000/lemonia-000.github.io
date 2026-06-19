@@ -45,6 +45,20 @@
                 <button class="lang-btn" data-lang="zh-hant">漢語</button>
                 <button class="lang-btn" data-lang="en">ENG</button>
             </div>
+            <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <ul class="mobile-nav-links">
+                <li><a href="#hero" data-lang-key="首页" onclick="toggleMobileMenu()">首页</a></li>
+                <li><a href="main-works.html" data-lang-key="主要作品">主要作品</a></li>
+                <li><a href="other-works.html" data-lang-key="其他作品">其他作品</a></li>
+                <li><a href="fun-stuff.html" data-lang-key="有意思的东西">有意思的东西</a></li>
+                <li><a href="about.html" data-lang-key="关于我们">关于我们</a></li>
+            </ul>
         </div>
     </nav>
 
