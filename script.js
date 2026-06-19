@@ -91,6 +91,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     incrementVisitorCount();
     loadAllPageWorks();
     
+    // 加载公告
+    loadAnnouncements();
+    
     // 初始化语言选择器
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', function() {
@@ -676,7 +679,14 @@ function loadAnnouncements() {
 // 获取公告
 function getAnnouncements() {
     const stored = localStorage.getItem('announcements');
-    return stored ? JSON.parse(stored) : [];
+    if (stored) {
+        const announcements = JSON.parse(stored);
+        if (announcements.length > 0) return announcements;
+    }
+    if (initialData && initialData.announcements && initialData.announcements.length > 0) {
+        return initialData.announcements;
+    }
+    return [];
 }
 
 // 保存公告
@@ -734,19 +744,14 @@ function formatDate(timestamp) {
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
 
-// 在页面加载完成后初始化公告栏
-document.addEventListener('DOMContentLoaded', function() {
-    loadAnnouncements();
+// 点击其他地方关闭公告面板
+document.addEventListener('click', function(e) {
+    const panel = document.getElementById('announcementPanel');
+    const toggle = document.getElementById('announcementToggle');
     
-    // 点击其他地方关闭公告面板
-    document.addEventListener('click', function(e) {
-        const panel = document.getElementById('announcementPanel');
-        const toggle = document.getElementById('announcementToggle');
-        
-        if (panel && panel.classList.contains('active')) {
-            if (!panel.contains(e.target) && !toggle.contains(e.target)) {
-                panel.classList.remove('active');
-            }
+    if (panel && panel.classList.contains('active')) {
+        if (!panel.contains(e.target) && !toggle.contains(e.target)) {
+            panel.classList.remove('active');
         }
-    });
+    }
 });
