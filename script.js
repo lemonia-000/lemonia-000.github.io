@@ -88,6 +88,7 @@ function toggleMobileMenu() {
 // 动态加载作品
 document.addEventListener('DOMContentLoaded', async function() {
     await loadInitialData();
+    await syncAnnouncementsFromFile();
     incrementVisitorCount();
     loadAllPageWorks();
     
@@ -687,6 +688,17 @@ function getAnnouncements() {
         return initialData.announcements;
     }
     return [];
+}
+
+// 初始化时从data.json同步到localStorage（确保数据一致性）
+async function syncAnnouncementsFromFile() {
+    await loadInitialData();
+    const stored = localStorage.getItem('announcements');
+    if (!stored || JSON.parse(stored).length === 0) {
+        if (initialData && initialData.announcements && initialData.announcements.length > 0) {
+            localStorage.setItem('announcements', JSON.stringify(initialData.announcements));
+        }
+    }
 }
 
 // 保存公告
