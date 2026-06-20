@@ -87,28 +87,29 @@ function toggleMobileMenu() {
 
 // 动态加载作品
 document.addEventListener('DOMContentLoaded', async function() {
-    await loadInitialData();
-    await syncAnnouncementsFromFile();
-    incrementVisitorCount();
-    loadAllPageWorks();
-    
-    // 加载公告
-    loadAnnouncements();
-    
-    // 初始化语言选择器
+    // 先启动计时器，确保日期正常走动
+    updateTimer();
+    setInterval(updateTimer, 1000);
+
+    // 先初始化语言选择器
+    const savedLang = localStorage.getItem('selectedLanguage') || 'zh';
+    switchLanguage(savedLang);
+
+    // 初始化语言选择器事件
     document.querySelectorAll('.lang-btn').forEach(btn => {
         btn.addEventListener('click', function() {
             switchLanguage(this.getAttribute('data-lang'));
         });
     });
-    
-    // 加载保存的语言设置
-    const savedLang = localStorage.getItem('selectedLanguage') || 'zh';
-    switchLanguage(savedLang);
-    
-    // 启动计时器
-    updateTimer();
-    setInterval(updateTimer, 1000);
+
+    // 后台异步加载数据，不阻塞页面渲染
+    setTimeout(async () => {
+        await loadInitialData();
+        await syncAnnouncementsFromFile();
+        incrementVisitorCount();
+        loadAllPageWorks();
+        loadAnnouncements();
+    }, 100);
 });
 
 // 登录次数计数（真实记录）
@@ -542,7 +543,9 @@ let initialData = null;
 
 async function loadInitialData() {
     try {
-        const response = await fetch('data.json');
+        const response = await fetch('data.json', {
+            cache: 'max-age=3600'
+        });
         initialData = await response.json();
     } catch (error) {
         console.log('无法加载初始数据文件:', error);
